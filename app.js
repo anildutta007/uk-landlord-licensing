@@ -623,7 +623,7 @@ function updateStats() {
   const badge = document.getElementById("tab-badge-pending");
   if (badge) {
     badge.innerText = `${pending} Pending`;
-    badge.className = pending === 0 ? "ml-1 bg-emerald-800 text-emerald-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono" : "ml-1 bg-amber-800 text-amber-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono";
+    badge.className = pending === 0 ? "ml-0.5 bg-emerald-800 text-emerald-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0 whitespace-nowrap" : "ml-0.5 bg-amber-800 text-amber-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0 whitespace-nowrap";
   }
 
   // Enforcement Exposure KPI
@@ -1535,7 +1535,7 @@ function calculateDeadlines() {
 function switchTab(tabId) {
   document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
   document.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.classList.remove("bg-emerald-700", "text-white", "shadow-sm");
+    btn.classList.remove("bg-emerald-700", "text-white", "shadow-sm", "border-emerald-700");
     btn.classList.add("bg-white", "text-slate-700", "border", "border-slate-300");
   });
 
@@ -1544,8 +1544,8 @@ function switchTab(tabId) {
 
   if (targetTab) targetTab.classList.remove("hidden");
   if (targetBtn) {
-    targetBtn.classList.remove("bg-white", "text-slate-700", "border", "border-slate-300");
-    targetBtn.classList.add("bg-emerald-700", "text-white", "shadow-sm");
+    targetBtn.classList.remove("bg-white", "text-slate-700", "border-slate-300");
+    targetBtn.classList.add("bg-emerald-700", "text-white", "shadow-sm", "border-emerald-700");
   }
 }
 

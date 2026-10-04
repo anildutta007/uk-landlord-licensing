@@ -171,45 +171,51 @@
   </section>
 
   <!-- ============================================== -->
-  <!-- MAIN NAVIGATION TABS -->
+  <!-- MAIN NAVIGATION TABS (RESPONSIVE NO-SCROLL GRID) -->
   <!-- ============================================== -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex items-center gap-2 border-b border-slate-300 pb-2 mb-6 no-print overflow-x-auto scrollbar-thin">
+    <nav class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-6 no-print border-b border-slate-200 pb-3" aria-label="Main Navigation Tabs">
       
-      <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn active px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-emerald-700 text-white shadow-sm shrink-0">
-        <i class="ph-bold ph-check-square"></i>
-        <span>35-Condition Checklist</span>
-        <span id="tab-badge-pending" class="ml-1 bg-emerald-900/60 text-emerald-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono">35</span>
+      <!-- TAB 1: 35-CONDITION CHECKLIST -->
+      <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn active w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-emerald-700 text-white shadow-sm border border-emerald-700" title="35-Condition Selective Licensing Compliance Checklist">
+        <i class="ph-bold ph-check-square text-sm shrink-0"></i>
+        <span class="truncate"><span class="hidden xl:inline">35-Condition </span>Checklist</span>
+        <span id="tab-badge-pending" class="ml-0.5 bg-emerald-900/70 text-emerald-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0 whitespace-nowrap">35</span>
       </button>
 
-      <button onclick="switchTab('templates')" id="tab-btn-templates" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
-        <i class="ph-bold ph-file-pdf"></i>
-        <span>Digital Legal Templates (PDF)</span>
-        <span class="ml-1 bg-slate-100 text-slate-600 text-[10px] px-1.5 py-0.5 rounded-full font-mono">7 Forms</span>
+      <!-- TAB 2: LEGAL TEMPLATES (PDF) -->
+      <button onclick="switchTab('templates')" id="tab-btn-templates" class="tab-btn w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400" title="7 Mandatory Legal Compliance Forms & PDF Documents">
+        <i class="ph-bold ph-file-pdf text-sm shrink-0 text-emerald-700"></i>
+        <span class="truncate"><span class="hidden xl:inline">Digital </span>Legal Templates</span>
+        <span class="ml-0.5 bg-slate-100 text-slate-600 text-[10px] px-1.5 py-0.5 rounded-full font-mono shrink-0 whitespace-nowrap">7 Forms</span>
       </button>
 
-      <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
-        <i class="ph-bold ph-clock"></i>
-        <span>Deadline &amp; 7-Day Triggers</span>
+      <!-- TAB 3: DEADLINE & 7-DAY TRIGGERS -->
+      <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="tab-btn w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400" title="Statutory 7-Day & Periodic Compliance Trigger Deadlines">
+        <i class="ph-bold ph-clock text-sm shrink-0 text-sky-600"></i>
+        <span class="truncate">Deadlines &amp; <span class="hidden xl:inline">7-Day </span>Triggers</span>
       </button>
 
-      <button onclick="switchTab('penalties')" id="tab-btn-penalties" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
-        <i class="ph-bold ph-scales"></i>
-        <span>Statutory Enforcement &amp; Fines</span>
+      <!-- TAB 4: ENFORCEMENT & FINES -->
+      <button onclick="switchTab('penalties')" id="tab-btn-penalties" class="tab-btn w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400" title="Statutory Civil Penalties (up to £30k), Prosecution & Rent Repayment Orders">
+        <i class="ph-bold ph-scales text-sm shrink-0 text-rose-600"></i>
+        <span class="truncate"><span class="hidden xl:inline">Statutory </span>Enforcement &amp; Fines</span>
       </button>
 
-      <button onclick="switchTab('guide')" id="tab-btn-guide" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
-        <i class="ph-bold ph-book-open-text"></i>
-        <span>Council &amp; BTL Guide</span>
+      <!-- TAB 5: COUNCIL & BTL GUIDE -->
+      <button onclick="switchTab('guide')" id="tab-btn-guide" class="tab-btn w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400" title="Council Selective Licensing Guidelines & Buy-to-Let Statutory Handbook">
+        <i class="ph-bold ph-book-open-text text-sm shrink-0 text-indigo-600"></i>
+        <span class="truncate">Council &amp; BTL Guide</span>
       </button>
 
-      <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
-        <i class="ph-bold ph-newspaper text-base text-rose-600"></i>
-        <span>UK Housing &amp; Council News</span>
-        <span class="ml-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-mono uppercase font-bold tracking-wider">Live</span>
+      <!-- TAB 6: UK HOUSING & COUNCIL NEWS -->
+      <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn w-full px-2.5 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400" title="UK Housing & Council Regulatory News Feed (Published Last 30 Days)">
+        <i class="ph-bold ph-newspaper text-sm text-rose-600 shrink-0"></i>
+        <span class="truncate"><span class="hidden xl:inline">UK </span>Housing News</span>
+        <span class="ml-0.5 bg-red-600 text-white text-[9px] px-1.5 py-0.2 rounded-full font-mono uppercase font-bold tracking-wider shrink-0 whitespace-nowrap">Live</span>
       </button>
 
-    </div>
+    </nav>
 
     <!-- ============================================== -->
     <!-- TAB 1: 35-CONDITION CHECKLIST TRACKER -->
