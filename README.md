@@ -2,7 +2,7 @@
 
 A professional, audit-ready web application for UK Buy-to-Let (BTL) landlords, property managers, and letting agents. Built to manage **Selective Licensing (Housing Act 2004 Part 3)**, **Additional HMO Licensing**, local council compliance audits, and statutory document generation with **instant downloadable PDF templates**.
 
-Pre-loaded with the **London Borough of Redbridge Selective Licensing Schedule (54 Express Drive benchmark)** and adaptable to **any local authority in England & Wales** (Newham, Brent, Waltham Forest, Nottingham, Manchester, Liverpool, etc.).
+Pre-loaded with the **London Borough of Redbridge Selective Licensing Schedule (35-condition benchmark)** and adaptable to **any local authority in England & Wales** (Newham, Brent, Waltham Forest, Nottingham, Manchester, Liverpool, etc.).
 
 ---
 
@@ -11,10 +11,10 @@ Pre-loaded with the **London Borough of Redbridge Selective Licensing Schedule (
 ### 1. Multi-Council & Multi-Property Switcher
 * **Generic for Any UK Property:** Easily customize property address, borough, postcode, licence reference, landlord contact, managing agent, and room sizes.
 * **1-Click Presets:**
-  * **London Borough of Redbridge** (54 Express Drive standard with full 35 conditions)
+  * **London Borough of Redbridge** (Official 35-condition Selective Licensing benchmark)
   * **London Borough of Newham** (Selective Scheme)
   * **Generic UK Selective Property** (Part 3 Housing Act standard)
-* **Local Storage Persistence:** All property details and checklist states are securely preserved in the browser.
+* **100% Client-Side Privacy:** All property details and checklist states are securely stored *only* inside each user's browser via `localStorage`. No data is ever sent to or stored on servers.
 
 ### 2. The 35-Condition Master Checklist Tracker
 * Covers all 35 statutory conditions specified in official UK council licensing schedules:

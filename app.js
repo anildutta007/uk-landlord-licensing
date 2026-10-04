@@ -11,21 +11,21 @@
 const PRESETS = {
   redbridge: {
     id: "prop_redbridge_default",
-    address: "54 Express Drive, Ilford",
+    address: "14 Cranbrook Road, Ilford",
     town: "Ilford, Essex",
-    postcode: "IG3 9QD",
+    postcode: "IG1 4NE",
     council: "London Borough of Redbridge",
-    licenceRef: "SEL-RED-2024-0054D",
+    licenceRef: "RED-SEL-2024-DEMO",
     scheme: "Selective Licensing (Part 3)",
-    landlordName: "Anil Dutta",
-    landlordPhone: "07900 123456",
-    landlordEmail: "anil.dutta@example.com",
-    emergencyPhone: "07900 999111 (24/7 Out-of-Hours)",
-    agentName: "City & Suburban Lettings Ltd",
+    landlordName: "Example Landlord",
+    landlordPhone: "07700 900123",
+    landlordEmail: "landlord@example.co.uk",
+    emergencyPhone: "07700 900999 (24/7 Out-of-Hours)",
+    agentName: "City Lettings Management Ltd",
     agentPhone: "020 8555 1234",
     maxPersons: 5,
     maxHouseholds: 1,
-    accreditation: "LLAS Accredited (London Landlord Scheme #48921)",
+    accreditation: "LLAS Accredited (London Landlord Scheme)",
     rooms: [
       { name: "Bedroom 1", size: "8.50 m²", range: "6.51m² - 10.22m²", maxPersons: 1, occupant: "Adult Occupant 1" },
       { name: "Bedroom 2", size: "12.80 m²", range: "> 10.22m²", maxPersons: 2, occupant: "Spouse / Partner" },
@@ -91,7 +91,30 @@ function loadCurrentProperty() {
       console.error("Error reading saved property", e);
     }
   }
-  return { ...PRESETS.redbridge };
+  return {
+    id: "prop_user_initial",
+    address: "Enter Rental Property Address",
+    town: "Town / Borough",
+    postcode: "POSTCODE",
+    council: "London Borough of Redbridge",
+    licenceRef: "Reference / Pending",
+    scheme: "Selective Licensing (Part 3)",
+    landlordName: "Your Full Legal Name",
+    landlordPhone: "07XXXXXXXXX",
+    landlordEmail: "landlord@example.com",
+    emergencyPhone: "07XXXXXXXXX (24/7 Out-of-Hours)",
+    agentName: "Direct Landlord / Managing Agent",
+    agentPhone: "020 XXXXXXXX",
+    maxPersons: 5,
+    maxHouseholds: 1,
+    accreditation: "LLAS / NRLA Accredited",
+    rooms: [
+      { name: "Bedroom 1", size: "8.50 m²", range: "6.51m² - 10.22m²", maxPersons: 1, occupant: "Occupant 1" },
+      { name: "Bedroom 2", size: "12.80 m²", range: "> 10.22m²", maxPersons: 2, occupant: "Occupant 2 & 3" },
+      { name: "Bedroom 3", size: "11.20 m²", range: "> 10.22m²", maxPersons: 2, occupant: "Occupant 4 & 5" },
+      { name: "Boxroom / Study", size: "4.10 m²", range: "< 4.64m²", maxPersons: 0, occupant: "Storage Only (No Sleeping)" }
+    ]
+  };
 }
 
 function saveCurrentProperty(prop) {
@@ -1585,22 +1608,86 @@ function loadPropertyPreset(type) {
   document.getElementById("prop-accreditation").value = preset.accreditation;
 }
 
+function clearPropertyForm() {
+  document.getElementById("prop-address").value = "";
+  document.getElementById("prop-council").value = "London Borough of Redbridge";
+  document.getElementById("prop-postcode").value = "";
+  document.getElementById("prop-licence-ref").value = "Pending Application";
+  document.getElementById("prop-scheme").value = "Selective Licensing (Part 3)";
+  document.getElementById("prop-landlord-name").value = "";
+  document.getElementById("prop-emergency-phone").value = "";
+  document.getElementById("prop-max-persons").value = 5;
+  document.getElementById("prop-max-households").value = 1;
+  document.getElementById("prop-agent-name").value = "";
+  document.getElementById("prop-accreditation").value = "";
+}
+
+function exportPropertyJSON() {
+  const exportPayload = {
+    version: "1.0",
+    exportedAt: new Date().toISOString(),
+    property: currentProperty,
+    conditions: conditionsData
+  };
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
+  const dlAnchor = document.createElement("a");
+  dlAnchor.setAttribute("href", dataStr);
+  const cleanFilename = `UK_Landlord_Licensing_${(currentProperty.postcode || "Backup").replace(/\s+/g, "_")}.json`;
+  dlAnchor.setAttribute("download", cleanFilename);
+  dlAnchor.click();
+}
+
+function importPropertyJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.property) {
+        saveCurrentProperty(data.property);
+        localStorage.setItem("uk_landlord_property_configured", "true");
+      }
+      if (data.conditions && Array.isArray(data.conditions)) {
+        conditionsData = data.conditions;
+        saveChecklistData();
+        renderChecklist();
+      }
+      alert("Property and compliance data successfully restored!");
+      closePropertyModal();
+    } catch (err) {
+      alert("Invalid backup file: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function wipeAllUserData() {
+  if (confirm("Are you sure you want to wipe all stored property data from this browser? This action cannot be undone.")) {
+    localStorage.removeItem("uk_landlord_current_prop");
+    localStorage.removeItem("uk_landlord_checklist_data");
+    localStorage.removeItem("uk_landlord_property_configured");
+    location.reload();
+  }
+}
+
 function savePropertySettings() {
   const updated = {
     ...currentProperty,
-    address: document.getElementById("prop-address").value.trim(),
-    council: document.getElementById("prop-council").value.trim(),
-    postcode: document.getElementById("prop-postcode").value.trim(),
-    licenceRef: document.getElementById("prop-licence-ref").value.trim(),
+    address: document.getElementById("prop-address").value.trim() || "Rental Property Address",
+    council: document.getElementById("prop-council").value.trim() || "Local Authority Council",
+    postcode: document.getElementById("prop-postcode").value.trim() || "POSTCODE",
+    licenceRef: document.getElementById("prop-licence-ref").value.trim() || "Pending",
     scheme: document.getElementById("prop-scheme").value,
-    landlordName: document.getElementById("prop-landlord-name").value.trim(),
-    emergencyPhone: document.getElementById("prop-emergency-phone").value.trim(),
+    landlordName: document.getElementById("prop-landlord-name").value.trim() || "Landlord Legal Name",
+    emergencyPhone: document.getElementById("prop-emergency-phone").value.trim() || "07XXXXXXXXX",
     maxPersons: parseInt(document.getElementById("prop-max-persons").value, 10) || 5,
     maxHouseholds: parseInt(document.getElementById("prop-max-households").value, 10) || 1,
-    agentName: document.getElementById("prop-agent-name").value.trim(),
-    accreditation: document.getElementById("prop-accreditation").value.trim()
+    agentName: document.getElementById("prop-agent-name").value.trim() || "Direct Landlord Managed",
+    accreditation: document.getElementById("prop-accreditation").value.trim() || "NRLA / LLAS"
   };
 
+  localStorage.setItem("uk_landlord_property_configured", "true");
   saveCurrentProperty(updated);
   closePropertyModal();
 }
@@ -1620,5 +1707,12 @@ window.addEventListener("DOMContentLoaded", () => {
   if (triggerInput) {
     triggerInput.value = new Date().toISOString().slice(0, 10);
     calculateDeadlines();
+  }
+
+  // If this is a first-time visitor on this browser, pop up the Setup Modal
+  if (!localStorage.getItem("uk_landlord_property_configured")) {
+    setTimeout(() => {
+      openPropertyModal();
+    }, 450);
   }
 });

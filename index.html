@@ -66,9 +66,9 @@
               <span id="header-scheme-badge" class="text-[11px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded border border-emerald-500/40">Selective Part 3</span>
             </div>
             <div class="text-xs text-slate-400 flex items-center gap-2">
-              <span id="header-property-summary">54 Express Drive, Ilford, IG3 9QD • Redbridge Borough</span>
+              <span id="header-property-summary" class="font-medium text-slate-200">No Property Selected — Click "Setup Property"</span>
               <button onclick="openPropertyModal()" class="text-emerald-400 hover:text-emerald-300 underline font-medium text-[11px] flex items-center gap-0.5">
-                <i class="ph-bold ph-pencil-simple"></i> Change Property
+                <i class="ph-bold ph-pencil-simple"></i> Setup / Change
               </button>
             </div>
           </div>
@@ -709,19 +709,35 @@
       </div>
 
       <div class="p-6 space-y-5 text-xs">
+
+        <!-- Privacy & Local Persistence Notice -->
+        <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 text-base">
+            <i class="ph-bold ph-lock-key"></i>
+          </div>
+          <div>
+            <div class="font-bold text-emerald-900 text-xs">100% Private &amp; Secure (Client-Side Storage)</div>
+            <p class="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+              Your property address, landlord name, and tenancy records are stored <strong>strictly inside your own browser (LocalStorage)</strong>. Nothing is ever sent to or stored on any central server or database.
+            </p>
+          </div>
+        </div>
         
         <!-- Preset Quick Pickers -->
         <div>
-          <label class="block font-semibold text-slate-700 mb-1.5">Load Standard Presets:</label>
+          <label class="block font-semibold text-slate-700 mb-1.5">Quick Setup / Demo Presets:</label>
           <div class="flex flex-wrap gap-2">
-            <button onclick="loadPropertyPreset('redbridge')" class="px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 font-semibold hover:bg-emerald-100 transition">
-              Redbridge (54 Express Drive)
+            <button onclick="loadPropertyPreset('redbridge')" class="px-3 py-1.5 rounded-lg border border-emerald-300 bg-white text-emerald-800 font-semibold hover:bg-emerald-50 transition">
+              Redbridge Borough Preset (Sample)
             </button>
-            <button onclick="loadPropertyPreset('newham')" class="px-3 py-1.5 rounded-lg border border-sky-300 bg-sky-50 text-sky-800 font-semibold hover:bg-sky-100 transition">
-              Newham Selective Preset
+            <button onclick="loadPropertyPreset('newham')" class="px-3 py-1.5 rounded-lg border border-sky-300 bg-white text-sky-800 font-semibold hover:bg-sky-50 transition">
+              Newham Selective Preset (Sample)
             </button>
-            <button onclick="loadPropertyPreset('generic')" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-800 font-semibold hover:bg-slate-100 transition">
-              Standard UK Selective
+            <button onclick="loadPropertyPreset('generic')" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50 transition">
+              Generic UK Selective (Sample)
+            </button>
+            <button onclick="clearPropertyForm()" class="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 font-semibold hover:bg-rose-100 transition">
+              Clear Form (Enter Mine)
             </button>
           </div>
         </div>
@@ -801,13 +817,32 @@
 
       </div>
 
-      <div class="p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2 sticky bottom-0">
-        <button onclick="closePropertyModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
-          Cancel
-        </button>
-        <button onclick="savePropertySettings()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
-          Save Settings &amp; Update App
-        </button>
+      <div class="p-5 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3 sticky bottom-0">
+        <!-- Local Storage Backup & Privacy Tools -->
+        <div class="flex items-center gap-2">
+          <button onclick="exportPropertyJSON()" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-semibold flex items-center gap-1 transition" title="Export your data to a JSON backup file">
+            <i class="ph-bold ph-download-simple"></i> Backup (.json)
+          </button>
+          
+          <label class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition" title="Restore your property data from a JSON backup file">
+            <i class="ph-bold ph-upload-simple"></i> Restore
+            <input type="file" id="import-json-input" onchange="importPropertyJSON(event)" class="hidden" accept=".json">
+          </label>
+
+          <button onclick="wipeAllUserData()" class="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-[11px] font-semibold flex items-center gap-1 transition" title="Delete all stored data from this browser">
+            <i class="ph-bold ph-trash"></i> Wipe Data
+          </button>
+        </div>
+
+        <!-- Action Controls -->
+        <div class="flex items-center gap-2">
+          <button onclick="closePropertyModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
+            Cancel
+          </button>
+          <button onclick="savePropertySettings()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
+            Save &amp; Generate Documents
+          </button>
+        </div>
       </div>
 
     </div>
