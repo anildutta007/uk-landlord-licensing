@@ -1,0 +1,21 @@
+{
+  "name": "uk-landlord-licensing",
+  "version": "1.0.0",
+  "description": "UK Landlord Licensing & Compliance Hub for Selective Licensing, Council Audits, and Legal PDF Generation",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "dev": "python -m http.server 8080"
+  },
+  "keywords": [
+    "uk-landlord",
+    "selective-licensing",
+    "redbridge-licensing",
+    "property-compliance",
+    "housing-act-2004",
+    "buy-to-let",
+    "pdf-generator"
+  ],
+  "author": "Anil Dutta",
+  "license": "MIT"
+}

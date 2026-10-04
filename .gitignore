@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel/
+
+# Environment
+.env
+.env.local

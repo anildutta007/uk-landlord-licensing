@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://uk-landlord-licensing.vercel.app/sitemap.xml

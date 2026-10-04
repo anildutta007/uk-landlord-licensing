@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Landlord Licensing & Compliance Hub | Selective Licensing & Council Audit Tool</title>
+  <meta name="description" content="Professional UK Buy-to-Let compliance portal for Selective Licensing, Additional HMO Licensing, statutory inspections, and audit-ready legal PDF document generation.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- html2pdf.js for Client-Side High-Resolution PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            council: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- ============================================== -->
+  <!-- TOP APPLICATION NAVBAR -->
+  <!-- ============================================== -->
+  <header class="bg-council-950 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand / Identity -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-emerald-900/30">
+            <i class="ph-bold ph-shield-check"></i>
+          </div>
+          <div>
+            <div class="text-base font-bold leading-tight flex items-center gap-2">
+              <span>UK Landlord Licensing Hub</span>
+              <span id="header-scheme-badge" class="text-[11px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded border border-emerald-500/40">Selective Part 3</span>
+            </div>
+            <div class="text-xs text-slate-400 flex items-center gap-2">
+              <span id="header-property-summary">54 Express Drive, Ilford, IG3 9QD • Redbridge Borough</span>
+              <button onclick="openPropertyModal()" class="text-emerald-400 hover:text-emerald-300 underline font-medium text-[11px] flex items-center gap-0.5">
+                <i class="ph-bold ph-pencil-simple"></i> Change Property
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compliance Score & Fast Actions -->
+        <div class="flex items-center gap-3">
+          <!-- Compliance Score Widget -->
+          <div class="hidden md:flex items-center gap-3 bg-slate-900/90 px-3.5 py-1.5 rounded-lg border border-slate-800">
+            <div class="text-right">
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Compliance Status</div>
+              <div id="compliance-health-label" class="text-xs font-bold text-emerald-400">Audit Ready</div>
+            </div>
+            <div class="w-24 bg-slate-800 h-2.5 rounded-full overflow-hidden border border-slate-700">
+              <div id="progress-bar-fill" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+            </div>
+            <span id="progress-text" class="text-sm font-mono font-bold text-emerald-400">0%</span>
+          </div>
+
+          <!-- Master PDF Audit Export -->
+          <button onclick="downloadMasterAuditDossier()" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition shadow-emerald-900/40">
+            <i class="ph-bold ph-file-pdf"></i>
+            <span class="hidden sm:inline">Export Audit Dossier (PDF)</span>
+            <span class="sm:hidden">Dossier</span>
+          </button>
+
+          <!-- Manage Properties Modal Button -->
+          <button onclick="openPropertyModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition">
+            <i class="ph-bold ph-buildings"></i>
+            <span class="hidden lg:inline">Properties</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================== -->
+  <!-- PROPERTY KPI CARDS & STATUS BANNER -->
+  <!-- ============================================== -->
+  <section class="bg-white border-b border-slate-200 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        
+        <!-- Occupancy Cap -->
+        <div class="bg-emerald-50/70 border border-emerald-200/70 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shrink-0">
+            <i class="ph-bold ph-users-four"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider">Permitted Occupancy</div>
+            <div id="kpi-permitted-cap" class="text-xs font-bold text-slate-900 truncate">Max 5 Persons • 1 Household</div>
+            <div class="text-[10px] text-emerald-700">Strict Single-Family (Class C3)</div>
+          </div>
+        </div>
+
+        <!-- 28-Day Council Demand Window -->
+        <div class="bg-sky-50/70 border border-sky-200/70 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-xl shrink-0">
+            <i class="ph-bold ph-clock-countdown"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-semibold text-sky-800 uppercase tracking-wider">Council Turnaround</div>
+            <div class="text-xs font-bold text-slate-900 truncate">Strict 28-Day Demand Window</div>
+            <div class="text-[10px] text-sky-700">All certificates, logs &amp; census</div>
+          </div>
+        </div>
+
+        <!-- 6-Month Inspection Routine -->
+        <div class="bg-amber-50/70 border border-amber-200/70 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-xl shrink-0">
+            <i class="ph-bold ph-calendar-check"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-semibold text-amber-800 uppercase tracking-wider">Statutory Inspection</div>
+            <div id="kpi-next-inspection" class="text-xs font-bold text-slate-900 truncate">Every 6 Months (Cond 14)</div>
+            <div class="text-[10px] text-amber-700">Log retained for min 3 years</div>
+          </div>
+        </div>
+
+        <!-- Non-Compliance Penalty Risk -->
+        <div class="bg-rose-50/70 border border-rose-200/70 rounded-xl p-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center text-xl shrink-0">
+            <i class="ph-bold ph-gavel"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-semibold text-rose-800 uppercase tracking-wider">Enforcement Exposure</div>
+            <div id="kpi-penalty-risk" class="text-xs font-bold text-slate-900 truncate">Up to £30,000 / Breach</div>
+            <div class="text-[10px] text-rose-700">Housing Act 2004 s.249A Civil Penalty</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== -->
+  <!-- MAIN NAVIGATION TABS -->
+  <!-- ============================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex items-center gap-2 border-b border-slate-300 pb-2 mb-6 no-print overflow-x-auto scrollbar-thin">
+      
+      <button onclick="switchTab('checklist')" id="tab-btn-checklist" class="tab-btn active px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-emerald-700 text-white shadow-sm shrink-0">
+        <i class="ph-bold ph-check-square"></i>
+        <span>35-Condition Checklist</span>
+        <span id="tab-badge-pending" class="ml-1 bg-emerald-900/60 text-emerald-200 text-[10px] px-1.5 py-0.5 rounded-full font-mono">35</span>
+      </button>
+
+      <button onclick="switchTab('templates')" id="tab-btn-templates" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
+        <i class="ph-bold ph-file-pdf"></i>
+        <span>Digital Legal Templates (PDF)</span>
+        <span class="ml-1 bg-slate-100 text-slate-600 text-[10px] px-1.5 py-0.5 rounded-full font-mono">7 Forms</span>
+      </button>
+
+      <button onclick="switchTab('calculator')" id="tab-btn-calculator" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
+        <i class="ph-bold ph-clock"></i>
+        <span>Deadline &amp; 7-Day Triggers</span>
+      </button>
+
+      <button onclick="switchTab('penalties')" id="tab-btn-penalties" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
+        <i class="ph-bold ph-scales"></i>
+        <span>Statutory Enforcement &amp; Fines</span>
+      </button>
+
+      <button onclick="switchTab('guide')" id="tab-btn-guide" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
+        <i class="ph-bold ph-book-open-text"></i>
+        <span>Council &amp; BTL Guide</span>
+      </button>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 1: 35-CONDITION CHECKLIST TRACKER -->
+    <!-- ============================================== -->
+    <div id="tab-checklist" class="tab-content block">
+      
+      <!-- Filter and Stats Controls -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+        <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <span id="checklist-council-name">London Borough of Redbridge</span> Selective Licensing Schedule
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Review and track all statutory conditions. Click any condition to launch its dedicated PDF template. Changes are automatically saved.
+            </p>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Search Filter -->
+            <div class="relative">
+              <i class="ph-bold ph-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="checklist-search" oninput="filterChecklist()" placeholder="Search conditions..." class="text-xs bg-white border border-slate-300 rounded-lg pl-8 pr-2.5 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 w-44">
+            </div>
+
+            <!-- Category Filter -->
+            <select id="filter-category" onchange="filterChecklist()" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <option value="all">All Categories</option>
+              <option value="occupancy">Occupancy &amp; Rooms</option>
+              <option value="safety">Safety &amp; Certificates</option>
+              <option value="tenancy">Tenancy &amp; Referencing</option>
+              <option value="property">Maintenance &amp; Waste</option>
+              <option value="management">Management &amp; ASB</option>
+            </select>
+
+            <!-- Status Filter -->
+            <select id="filter-status" onchange="filterChecklist()" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending Attention</option>
+              <option value="done">Compliant Only</option>
+            </select>
+
+            <button onclick="markAllCompleted()" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 px-3 py-1.5 rounded-lg font-medium transition" title="Mark all items as completed">
+              Mark All Done
+            </button>
+
+            <button onclick="resetChecklist()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded-lg font-medium transition">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Checklist Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider text-[11px] border-b border-slate-200">
+              <tr>
+                <th class="p-3.5 w-14 text-center">Status</th>
+                <th class="p-3.5 w-24">Condition</th>
+                <th class="p-3.5">Specific Regulatory Requirement</th>
+                <th class="p-3.5 w-40">Physical File Required</th>
+                <th class="p-3.5 w-44">Retention Rule</th>
+                <th class="p-3.5 w-28 text-center">Template</th>
+              </tr>
+            </thead>
+            <tbody id="checklist-table-body" class="divide-y divide-slate-200 font-normal">
+              <!-- Rendered Dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 2: INTERACTIVE LEGAL TEMPLATES & PDF GENERATOR -->
+    <!-- ============================================== -->
+    <div id="tab-templates" class="tab-content hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Template Selection Sidebar (4 cols) -->
+        <div class="lg:col-span-4 space-y-2 no-print">
+          <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm mb-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
+              <span>Select Statutory PDF Form</span>
+              <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">Housing Act 2004</span>
+            </h3>
+            <p class="text-[11px] text-slate-500 mt-1">Pre-populated with your property data. Edit inline and download official PDF.</p>
+          </div>
+
+          <!-- Template 1 -->
+          <button onclick="loadTemplate('inspection', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-emerald-600 bg-emerald-50 text-slate-900 transition flex items-start gap-3 shadow-sm">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-clipboard-text"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">6-Month Property Inspection Audit</div>
+              <div class="text-[11px] text-slate-500">Conditions 1, 2, 14, 17, 20 • 3-Year Retention</div>
+            </div>
+          </button>
+
+          <!-- Template 2 -->
+          <button onclick="loadTemplate('declaration', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-certificate"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">Statutory Safety Declarations</div>
+              <div class="text-[11px] text-slate-500">Conditions 7, 8, 11, 12 • Alarms, Furniture, Appliances</div>
+            </div>
+          </button>
+
+          <!-- Template 3 -->
+          <button onclick="loadTemplate('onboarding', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-address-book"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">Tenant Onboarding &amp; Waste Notice</div>
+              <div class="text-[11px] text-slate-500">Conditions 18, 19, 25, 27, 30, 35 • Handover pack</div>
+            </div>
+          </button>
+
+          <!-- Template 4 -->
+          <button onclick="loadTemplate('asb', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-warning-octagon"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">7-Day ASB Warning Notice</div>
+              <div class="text-[11px] text-slate-500">Condition 34 • Ground 7A/14 Warning • 5-Year Archive</div>
+            </div>
+          </button>
+
+          <!-- Template 5 -->
+          <button onclick="loadTemplate('agent', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-handshake"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">Managing Agent Joint Liability Consent</div>
+              <div class="text-[11px] text-slate-500">Condition 23 • Acknowledges £30,000 fine per breach</div>
+            </div>
+          </button>
+
+          <!-- Template 6 -->
+          <button onclick="loadTemplate('census', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-users"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">Household Census &amp; Room Register</div>
+              <div class="text-[11px] text-slate-500">Condition 26 • Satisfies 28-Day Council Demand</div>
+            </div>
+          </button>
+
+          <!-- Template 7 -->
+          <button onclick="loadTemplate('audit-dossier', this)" class="tmpl-selector w-full text-left p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-900 transition flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center shrink-0 text-base">
+              <i class="ph-bold ph-folder-notch-open"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold">Master 28-Day Council Audit Dossier</div>
+              <div class="text-[11px] text-slate-500">Consolidated Executive Compliance Package</div>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Template Display & Edit Canvas (8 cols) -->
+        <div class="lg:col-span-8">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 doc-canvas" id="template-editor-box">
+            
+            <!-- Top Form Toolbar -->
+            <div class="flex flex-wrap items-center justify-between border-b border-slate-200 pb-4 mb-5 no-print gap-3">
+              <div>
+                <span id="template-badge" class="text-[10px] bg-emerald-100 text-emerald-800 font-mono px-2 py-0.5 rounded font-bold uppercase">Condition 14 Log</span>
+                <h3 id="template-title" class="text-base font-bold text-slate-900 mt-1">6-Month Property Inspection Audit</h3>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <!-- Direct PDF Download Button (Uses html2pdf.js) -->
+                <button onclick="downloadCurrentTemplatePDF()" id="btn-download-pdf" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold flex items-center gap-1.5 transition shadow-sm">
+                  <i class="ph-bold ph-file-arrow-down"></i>
+                  <span>Download PDF</span>
+                </button>
+
+                <!-- Native Print / Save to PDF -->
+                <button onclick="window.print()" class="bg-council-900 hover:bg-slate-800 text-white text-xs px-3.5 py-2 rounded-lg font-medium flex items-center gap-1.5 transition">
+                  <i class="ph-bold ph-printer"></i>
+                  <span>Print Document</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Printable Form Body (Populated dynamically) -->
+            <div id="printable-area" class="pdf-page bg-white">
+              <!-- Content inserted dynamically via JS -->
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 3: STATUTORY DEADLINES & CALCULATOR -->
+    <!-- ============================================== -->
+    <div id="tab-calculator" class="tab-content hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Interactive Date Calculator -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-2">
+            <i class="ph-bold ph-calendar-plus text-emerald-600 text-lg"></i>
+            Statutory Deadline &amp; Trigger Calculator
+          </h3>
+          <p class="text-xs text-slate-500 mb-5">
+            Select a trigger event date (e.g. date of council demand letter, complaint notice, or missed rent) to compute statutory response deadlines under UK Housing Law:
+          </p>
+
+          <div class="space-y-4 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Select Trigger Event Date:</label>
+              <input type="date" id="trigger-date" onchange="calculateDeadlines()" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800 focus:ring-1 focus:ring-emerald-500 outline-none">
+            </div>
+
+            <div class="border-t border-slate-100 pt-3 space-y-3">
+              
+              <!-- 7-Day Window -->
+              <div class="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-rose-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-warning text-rose-600"></i> 7-Day Immediate Statutory Window
+                  </span>
+                  <span id="date-7d" class="font-mono font-bold text-rose-700 text-sm">--</span>
+                </div>
+                <p class="text-[11px] text-rose-700 leading-relaxed">
+                  <strong>Mandatory Actions:</strong> Arrange pest eradication treatment (Cond 15), issue garden bulky waste written warning letter (Cond 19), or contact tenant in writing regarding Anti-Social Behaviour complaint (Cond 34a).
+                </p>
+              </div>
+
+              <!-- 28-Day Window -->
+              <div class="p-3.5 bg-sky-50 rounded-xl border border-sky-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-sky-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-hourglass-simple-high text-sky-600"></i> 28-Day Council Production Window
+                  </span>
+                  <span id="date-28d" class="font-mono font-bold text-sky-700 text-sm">--</span>
+                </div>
+                <p class="text-[11px] text-sky-700 leading-relaxed">
+                  <strong>Strict Local Authority Turnaround:</strong> Maximum statutory time to provide requested Gas Safety CP12, EICR, AST agreement, inspection logs, manager declarations, or occupancy census following written demand.
+                </p>
+              </div>
+
+              <!-- 30-Day Window -->
+              <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-amber-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-shield-warning text-amber-600"></i> 30-Day Deposit Protection &amp; Abandonment
+                  </span>
+                  <span id="date-30d" class="font-mono font-bold text-amber-700 text-sm">--</span>
+                </div>
+                <p class="text-[11px] text-amber-700 leading-relaxed">
+                  <strong>Housing Act 2004 s.213:</strong> Protect deposit in approved custodial/insured scheme &amp; serve Prescribed Information (Cond 29). Also deadline for physical welfare inspection following missed rent (Cond 31).
+                </p>
+              </div>
+
+              <!-- 6-Month Window -->
+              <div class="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="font-bold text-emerald-900 flex items-center gap-1.5">
+                    <i class="ph-bold ph-calendar-check text-emerald-600"></i> 6-Month Mandatory Inspection
+                  </span>
+                  <span id="date-6m" class="font-mono font-bold text-emerald-700 text-sm">--</span>
+                </div>
+                <p class="text-[11px] text-emerald-700 leading-relaxed">
+                  <strong>Condition 14:</strong> Next physical inspection date to audit room overcrowding, alarm tests, damp/mould, and disrepair. Log must be signed and retained for 3 years.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Mandatory Retention Schedule -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-2">
+            <i class="ph-bold ph-archive text-sky-600 text-lg"></i>
+            Mandatory Statutory Retention Schedule
+          </h3>
+          <p class="text-xs text-slate-500 mb-4">
+            Preservation periods legally required under Redbridge and UK Selective Licensing regulations:
+          </p>
+
+          <div class="space-y-3 text-xs">
+            
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Anti-Social Behaviour Files &amp; Warnings (Cond 34c)</div>
+                <div class="text-[11px] text-slate-500">Letters, emails, notices, and council multi-agency notes</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-rose-100 text-rose-800 shrink-0">5 Years</span>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Electrical Installation Report (EICR) (Cond 9)</div>
+                <div class="text-[11px] text-slate-500">Satisfactory periodic electrical inspection certificate</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-sky-100 text-sky-800 shrink-0">5 Years</span>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Complaints, Disrepair &amp; Pest Records (Cond 17)</div>
+                <div class="text-[11px] text-slate-500">Tenant repair notices, response letters, contractor invoices</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-amber-100 text-amber-800 shrink-0">3 Years</span>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">6-Month Property Inspection Logs (Cond 14)</div>
+                <div class="text-[11px] text-slate-500">Dated physical condition audits with inspector names</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-amber-100 text-amber-800 shrink-0">3 Years</span>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Gas Safety Certificate (CP12) (Cond 6)</div>
+                <div class="text-[11px] text-slate-500">Annual gas appliance inspection by Gas Safe engineer</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-purple-100 text-purple-800 shrink-0">12 Months</span>
+            </div>
+
+            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-slate-800">Tenancy Agreements &amp; References (Cond 3, 4, 5)</div>
+                <div class="text-[11px] text-slate-500">AST agreements, Right to Rent checks, verbal reference records</div>
+              </div>
+              <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-emerald-100 text-emerald-800 shrink-0">Licence Life</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 4: STATUTORY ENFORCEMENT & FINES -->
+    <!-- ============================================== -->
+    <div id="tab-penalties" class="tab-content hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="ph-bold ph-gavel text-rose-600 text-xl"></i>
+            Enforcement Framework &amp; Legal Penalties (Housing Act 2004)
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Under Section 95 of the Housing Act 2004, failure to comply with any single condition of a selective licence without reasonable excuse is a strict liability offence.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          
+          <div class="border border-rose-200 bg-rose-50/60 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span>
+              <h4 class="font-bold text-rose-950 text-sm">Civil Penalty Notices (Section 249A)</h4>
+            </div>
+            <p class="text-rose-800 leading-relaxed">
+              Redbridge Council has statutory power to impose financial penalties of <strong>up to £30,000 for each individual breach</strong> without court proceedings. Unpaid penalties are enforced via the County Court.
+            </p>
+          </div>
+
+          <div class="border border-slate-200 bg-slate-50 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+              <h4 class="font-bold text-slate-900 text-sm">Magistrates&#39; Court Criminal Prosecution</h4>
+            </div>
+            <p class="text-slate-600 leading-relaxed">
+              Prosecution results in an <strong>unlimited fine</strong>, criminal conviction, mandatory notification of mortgage lenders, and immediate revocation of &quot;Fit and Proper&quot; landlord status.
+            </p>
+          </div>
+
+          <div class="border border-amber-200 bg-amber-50/60 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+              <h4 class="font-bold text-amber-950 text-sm">Rent Repayment Orders (RRO)</h4>
+            </div>
+            <p class="text-amber-800 leading-relaxed">
+              Tenants or the local authority may apply to the First-tier Tribunal (Property Chamber) for an RRO compelling the landlord to <strong>repay up to 12 months&#39; rent</strong> collected during the period of non-compliance.
+            </p>
+          </div>
+
+          <div class="border border-purple-200 bg-purple-50/60 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+              <h4 class="font-bold text-purple-950 text-sm">Banning Orders &amp; Rogue Landlord Database</h4>
+            </div>
+            <p class="text-purple-800 leading-relaxed">
+              Under the Housing and Planning Act 2016, repeat offenders may receive a <strong>Banning Order</strong> prohibiting them from letting or managing housing nationwide, plus inclusion on the Rogue Landlord Database.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Article 4 Direction Warning -->
+        <div class="border-t border-slate-200 pt-5">
+          <div class="bg-amber-50 border border-amber-300 rounded-xl p-4.5 text-xs text-amber-900 leading-relaxed">
+            <div class="flex items-center gap-2 font-bold text-sm text-amber-950 mb-1">
+              <i class="ph-bold ph-shield-warning text-lg text-amber-700"></i>
+              <span>Redbridge Article 4(1) Direction &amp; Planning Restriction</span>
+            </div>
+            <p class="mb-2">
+              This Selective Licence applies <strong>solely to single-family dwelling occupation (Use Class C3)</strong>. The London Borough of Redbridge enacted an Article 4(1) Direction on 6 December 2019 that completely removed permitted development rights for small HMOs (Class C4: 3 to 6 unrelated persons).
+            </p>
+            <p>
+              Converting or letting this property to multiple unrelated sharers requires express planning permission. Doing so without planning consent is both a criminal planning offence and an immediate breach of Licence Condition 1 &amp; Condition 22.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 5: COUNCIL & BTL GUIDE -->
+    <!-- ============================================== -->
+    <div id="tab-guide" class="tab-content hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+        
+        <div>
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="ph-bold ph-book-open-text text-emerald-600 text-xl"></i>
+            UK Property Licensing Guide for BTL Landlords
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Understanding the three tiers of property licensing under the Housing Act 2004 in England:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+            <span class="text-[10px] font-mono uppercase font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Part 3</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-2 mb-1">Selective Licensing</h4>
+            <p class="text-slate-600 leading-relaxed">
+              Designated by councils in specific wards or entire boroughs to combat poor housing conditions, anti-social behaviour, or low housing demand. Applies to <strong>all privately rented properties</strong>, even single families or lone tenants.
+            </p>
+          </div>
+
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+            <span class="text-[10px] font-mono uppercase font-bold text-sky-700 bg-sky-100 px-2 py-0.5 rounded">Part 2</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-2 mb-1">Additional HMO Licensing</h4>
+            <p class="text-slate-600 leading-relaxed">
+              Introduced by local authorities for smaller Houses in Multiple Occupation (typically 3 or 4 unrelated tenants forming 2+ households sharing bathroom/kitchen facilities) not covered by mandatory HMO licensing.
+            </p>
+          </div>
+
+          <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+            <span class="text-[10px] font-mono uppercase font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">Part 2 National</span>
+            <h4 class="font-bold text-slate-900 text-sm mt-2 mb-1">Mandatory HMO Licensing</h4>
+            <p class="text-slate-600 leading-relaxed">
+              Nationwide statutory requirement across England for any property occupied by <strong>5 or more persons forming 2 or more households</strong> who share basic amenities (kitchen, toilet, bathroom).
+            </p>
+          </div>
+
+        </div>
+
+        <div class="border-t border-slate-200 pt-4 text-xs text-slate-600 leading-relaxed space-y-2">
+          <h4 class="font-bold text-slate-800">Essential Landlord Pre-Tenancy Checklist (National Law):</h4>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Gas Safety Certificate (CP12):</strong> Valid check within last 12 months by Gas Safe engineer. Issued to tenants before occupation.</li>
+            <li><strong>EICR (Electrical Safety):</strong> Satisfactory report produced within last 5 years by a qualified electrician.</li>
+            <li><strong>EPC (Energy Performance Certificate):</strong> Valid EPC rating of Band E or higher (MEES Regulations).</li>
+            <li><strong>Smoke &amp; Carbon Monoxide Regulations:</strong> Working smoke alarm on every habitable floor; carbon monoxide detector in rooms with combustion appliances.</li>
+            <li><strong>Right to Rent Verification:</strong> Visual or share-code check verified prior to tenancy start.</li>
+            <li><strong>Tenancy Deposit Prescribed Information:</strong> Served within 30 statutory days of receiving the deposit.</li>
+            <li><strong>How to Rent Guide:</strong> Current government edition supplied at the start of tenancy.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- PROPERTY CONFIGURATOR MODAL -->
+  <!-- ============================================== -->
+  <div id="property-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden no-print">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin">
+      
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <i class="ph-bold ph-buildings text-emerald-600"></i> Property &amp; Council Settings
+          </h3>
+          <p class="text-xs text-slate-500">Configure property details, council borough, and permitted occupancy limits.</p>
+        </div>
+        <button onclick="closePropertyModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i class="ph-bold ph-x text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-5 text-xs">
+        
+        <!-- Preset Quick Pickers -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1.5">Load Standard Presets:</label>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="loadPropertyPreset('redbridge')" class="px-3 py-1.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 font-semibold hover:bg-emerald-100 transition">
+              Redbridge (54 Express Drive)
+            </button>
+            <button onclick="loadPropertyPreset('newham')" class="px-3 py-1.5 rounded-lg border border-sky-300 bg-sky-50 text-sky-800 font-semibold hover:bg-sky-100 transition">
+              Newham Selective Preset
+            </button>
+            <button onclick="loadPropertyPreset('generic')" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 text-slate-800 font-semibold hover:bg-slate-100 transition">
+              Standard UK Selective
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Property Address -->
+          <div class="sm:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1">Property Full Address:</label>
+            <input type="text" id="prop-address" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Council Name -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Local Authority Council:</label>
+            <input type="text" id="prop-council" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Postcode -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Postcode:</label>
+            <input type="text" id="prop-postcode" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Licence Number -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Licence Reference Number:</label>
+            <input type="text" id="prop-licence-ref" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Scheme Type -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Licensing Scheme:</label>
+            <select id="prop-scheme" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+              <option value="Selective Licensing (Part 3)">Selective Licensing (Part 3)</option>
+              <option value="Additional HMO Licensing (Part 2)">Additional HMO Licensing (Part 2)</option>
+              <option value="Mandatory HMO Licensing">Mandatory HMO Licensing</option>
+              <option value="Standard PRS Tenancy">Standard PRS Tenancy</option>
+            </select>
+          </div>
+
+          <!-- Landlord Name -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Landlord / Licence Holder Name:</label>
+            <input type="text" id="prop-landlord-name" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Landlord Phone / Emergency -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Emergency Out-of-Hours Phone:</label>
+            <input type="text" id="prop-emergency-phone" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Max Permitted Persons -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Max Permitted Persons:</label>
+            <input type="number" id="prop-max-persons" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Max Permitted Households -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Max Permitted Households:</label>
+            <input type="number" id="prop-max-households" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Managing Agent Name -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Managing Agent (if applicable):</label>
+            <input type="text" id="prop-agent-name" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+
+          <!-- Accreditation Body -->
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Accreditation (LLAS / NRLA):</label>
+            <input type="text" id="prop-accreditation" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-5 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2 sticky bottom-0">
+        <button onclick="closePropertyModal()" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
+          Cancel
+        </button>
+        <button onclick="savePropertySettings()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition">
+          Save Settings &amp; Update App
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- APP FOOTER -->
+  <!-- ============================================== -->
+  <footer class="bg-white border-t border-slate-200 py-5 mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-3">
+      <div>
+        <span class="font-bold text-slate-700">UK Landlord Licensing &amp; Compliance Hub</span> • Developed for UK Buy-to-Let compliance under Housing Act 2004 &amp; Housing and Planning Act 2016.
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-slate-400">Vercel Ready • GitHub Integrated</span>
+        <button onclick="openPropertyModal()" class="text-emerald-700 hover:underline font-semibold">Change Property Settings</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
