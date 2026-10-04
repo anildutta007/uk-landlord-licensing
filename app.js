@@ -1454,6 +1454,9 @@ function jumpToTemplate(key) {
 // Client-Side PDF Generation using html2pdf.js
 function downloadCurrentTemplatePDF() {
   const cfg = TEMPLATE_CONFIGS[currentTemplateKey];
+  if (typeof gtag === "function") {
+    gtag("event", "generate_pdf", { template: currentTemplateKey });
+  }
   const element = document.getElementById("printable-area");
   if (!element || !cfg) return;
 
@@ -1546,6 +1549,9 @@ function switchTab(tabId) {
   if (targetBtn) {
     targetBtn.classList.remove("bg-white", "text-slate-700", "border-slate-300");
     targetBtn.classList.add("bg-emerald-700", "text-white", "shadow-sm", "border-emerald-700");
+  }
+  if (typeof gtag === "function") {
+    gtag("event", "tab_view", { tab_id: tabId });
   }
 }
 
@@ -2147,6 +2153,9 @@ let currentTipAmount = 1;
 
 function openTipModal() {
   document.getElementById("tip-modal")?.classList.remove("hidden");
+  if (typeof gtag === "function") {
+    gtag("event", "tip_modal_open");
+  }
 }
 
 function closeTipModal() {
