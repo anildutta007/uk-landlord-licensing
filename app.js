@@ -2078,6 +2078,43 @@ function lookupCouncilLicensingInfo() {
 // =========================================================================
 // 11. INITIALIZATION
 // =========================================================================
+// 12. MONZO TIP DEVELOPER LOGIC (£1 OR £2 VOLUNTARY CONTRIBUTION)
+// =========================================================================
+
+let currentTipAmount = 1;
+
+function openTipModal() {
+  document.getElementById("tip-modal")?.classList.remove("hidden");
+}
+
+function closeTipModal() {
+  document.getElementById("tip-modal")?.classList.add("hidden");
+}
+
+function selectTipAmount(amount) {
+  currentTipAmount = amount;
+  const btn1 = document.getElementById("tipBtn1");
+  const btn2 = document.getElementById("tipBtn2");
+  const displayAmount = document.getElementById("tipMonzoDisplayAmount");
+  const btnMonzo = document.getElementById("btnTipMonzo");
+  const note = encodeURIComponent("Tip for UK Landlord Licensing Hub");
+
+  if (amount === 1) {
+    if (btn1) btn1.className = "p-3.5 rounded-xl border-2 border-amber-500 bg-amber-50 text-amber-950 font-bold text-sm flex flex-col items-center justify-center transition cursor-pointer";
+    if (btn2) btn2.className = "p-3.5 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 text-slate-800 font-bold text-sm flex flex-col items-center justify-center transition cursor-pointer";
+    if (displayAmount) displayAmount.innerText = "£1.00";
+    if (btnMonzo) btnMonzo.href = `https://monzo.me/anildutta/1?d=${note}`;
+  } else {
+    if (btn2) btn2.className = "p-3.5 rounded-xl border-2 border-amber-500 bg-amber-50 text-amber-950 font-bold text-sm flex flex-col items-center justify-center transition cursor-pointer";
+    if (btn1) btn1.className = "p-3.5 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-slate-50 text-slate-800 font-bold text-sm flex flex-col items-center justify-center transition cursor-pointer";
+    if (displayAmount) displayAmount.innerText = "£2.00";
+    if (btnMonzo) btnMonzo.href = `https://monzo.me/anildutta/2?d=${note}`;
+  }
+}
+
+// =========================================================================
+// 13. APP INITIALIZATION
+// =========================================================================
 
 window.addEventListener("DOMContentLoaded", () => {
   syncPropertyUI();
@@ -2101,4 +2138,5 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 450);
   }
 });
+
 
