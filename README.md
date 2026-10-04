@@ -55,6 +55,12 @@ Generate and download **7 official legal PDF documents** ready to be signed or p
 * Rent Repayment Orders (RROs) up to 12 months' rent.
 * Article 4 Planning Direction analysis (explaining why letting to unrelated sharers breaches planning).
 
+### 6. Live UK Housing & Council Regulatory News Hub
+* **Government Bills & Reforms:** Real-time updates on the **Renters' Rights Bill** (Section 21 abolition, periodic tenancies, landlord database, Awaab's Law in PRS).
+* **Council Licensing Designations:** Tracking active selective and additional schemes across London (Redbridge, Newham, Brent, Waltham Forest, Westminster) and major UK cities (Birmingham, Nottingham, Manchester, Liverpool, Leeds).
+* **Enforcement & Fines Tracking:** Monitoring civil penalties, Home Office Right to Rent penalty increases (tripled up to £10k/tenant), and Tribunal Rent Repayment Order rulings.
+* **Interactive Council Scheme Lookup Tool:** Instant lookup for any local authority's active licensing rules, fee schedules, and direct council portal links.
+
 ---
 
 ## 📦 Project Structure

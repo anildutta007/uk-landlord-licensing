@@ -1693,7 +1693,390 @@ function savePropertySettings() {
 }
 
 // =========================================================================
-// 9. INITIALIZATION
+// 10. UK HOUSING & COUNCIL REGULATORY NEWS ENGINE
+// =========================================================================
+
+const HOUSING_NEWS = [
+  {
+    id: "news-renters-rights-bill",
+    title: "Renters' Rights Bill: Abolition of Section 21 'No-Fault' Evictions Progresses",
+    source: "GOV.UK • MHCLG",
+    category: "legislation",
+    badge: "Government Bill",
+    badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
+    date: "Autumn 2024 / Parliamentary Progress",
+    urgency: "High Impact",
+    summary: "The Government has introduced the landmark Renters' Rights Bill to Parliament. The legislation confirms the complete abolition of Section 21 evictions for both new and existing tenancies, transitioning all agreements to rolling periodic tenancies. It establishes a mandatory PRS Landlord Database, applies the Decent Homes Standard to private lets, and introduces 'Awaab's Law' hazard deadlines for damp and mould.",
+    takeaway: "Landlords will rely strictly on Section 8 grounds with longer notice periods. Maintaining rigorous 6-month inspection logs (Condition 14) and proof of rent receipts (Condition 33) will be essential for any contested court application.",
+    linkText: "Read Official Government Bill Overview",
+    linkUrl: "https://www.gov.uk/government/collections/renters-rights-bill"
+  },
+  {
+    id: "news-redbridge-licensing-enforcement",
+    title: "Redbridge Council Intensifies Selective Licensing Audits & Unannounced Visits",
+    source: "London Borough of Redbridge",
+    category: "councils",
+    badge: "Council Scheme",
+    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
+    date: "Current Regulatory Enforcement",
+    urgency: "Direct Duty",
+    summary: "The London Borough of Redbridge Property Licensing Team has warned that council enforcement officers are actively auditing rental properties across all designated Selective Licensing wards. The council is strictly auditing compliance with the 35 mandatory conditions, focusing particularly on 6-month inspection logs, signed Managing Agent consent declarations, and zero bulky waste in gardens.",
+    takeaway: "Under Section 249A of the Housing Act 2004, council officers have statutory authority to levy Civil Penalty Notices up to £30,000 for each individual breach without court prosecution.",
+    linkText: "Redbridge Property Licensing Portal",
+    linkUrl: "https://www.redbridge.gov.uk/housing/private-rentals/property-licensing/"
+  },
+  {
+    id: "news-right-to-rent-penalties",
+    title: "Home Office Triples Civil Penalties for Right to Rent Non-Compliance",
+    source: "UK Home Office",
+    category: "enforcement",
+    badge: "Fines & Penalties",
+    badgeColor: "bg-amber-100 text-amber-800 border-amber-300",
+    date: "Statutory Enforcement Alert",
+    urgency: "Severe Fines",
+    summary: "Civil penalties under the Immigration Act for landlords letting properties to occupiers without legal status have tripled. The maximum penalty for a first violation has increased to £5,000 per occupier (up from £1,000). Repeat violations now incur penalties of up to £10,000 per occupier (previously £3,000).",
+    takeaway: "Ensure physical or digital Home Office share-code verification is conducted and documented prior to tenancy inception (Condition 4) and retained on file for the duration of the tenancy.",
+    linkText: "GOV.UK Right to Rent Penalty Schedule",
+    linkUrl: "https://www.gov.uk/check-tenant-right-to-rent-documents"
+  },
+  {
+    id: "news-london-licensing-expansion",
+    title: "New Selective & Additional Licensing Designations across London & UK Cities",
+    source: "London Councils & DLUHC",
+    category: "councils",
+    badge: "New Licensing Zones",
+    badgeColor: "bg-sky-100 text-sky-800 border-sky-300",
+    date: "Expanded Schemes",
+    urgency: "Wards Active",
+    summary: "Multiple London local authorities—including Newham, Brent, Waltham Forest, Haringey, and Westminster—along with Birmingham, Nottingham, and Manchester councils, have rolled out expanded Selective and Additional HMO licensing schemes. In many boroughs, every single privately rented home across majority wards now legally requires a licence.",
+    takeaway: "Operating an unlicensed property leaves landlords open to Tribunal Rent Repayment Orders (RROs) demanding 100% of rent returned to tenants, and invalidates any Section 21 notice.",
+    linkText: "London Property Licensing Directory",
+    linkUrl: "https://www.londonpropertylicensing.co.uk/"
+  },
+  {
+    id: "news-epc-mees-consultation",
+    title: "Government Re-evaluates Minimum Energy Efficiency Standards (MEES EPC Target C)",
+    source: "Department for Energy Security & Net Zero",
+    category: "standards",
+    badge: "Energy & Net Zero",
+    badgeColor: "bg-teal-100 text-teal-800 border-teal-300",
+    date: "Policy Consultation",
+    urgency: "Target 2030",
+    summary: "Ministers have confirmed plans to raise the Minimum Energy Efficiency Standard (MEES) for private rented homes from the current minimum EPC Band E to Band C by 2030. Consultations are focusing on practical spending caps (around £10,000 per property) and council energy retrofit support grants.",
+    takeaway: "When replacing boilers, upgrading windows, or insulating lofts, aim for EPC Band C to protect asset value and future-proof against upcoming statutory letting bans.",
+    linkText: "GOV.UK Domestic Rental Energy Standards",
+    linkUrl: "https://www.gov.uk/guidance/domestic-private-rented-property-minimum-energy-efficiency-standard-landlord-guidance"
+  },
+  {
+    id: "news-tribunal-rro-guidance",
+    title: "Upper Tribunal Confirms 100% Maximum Rent Repayment Orders for Unlicensed Lets",
+    source: "Upper Tribunal (Lands Chamber)",
+    category: "enforcement",
+    badge: "Tribunal Precedent",
+    badgeColor: "bg-purple-100 text-purple-800 border-purple-300",
+    date: "Legal Precedent",
+    urgency: "12-Month Clawback",
+    summary: "Recent Upper Tribunal rulings have established that where a landlord fails to obtain a required Selective or HMO licence, the baseline starting point for Tribunal Rent Repayment Orders (RRO) is 100% of the rent paid during the unlicensed period. Claims of not knowing the council introduced a scheme are rejected as a valid excuse.",
+    takeaway: "Landlords must submit their licensing application before tenants take possession. A valid licence application pending approval protects against RRO liability.",
+    linkText: "Tribunal Property Chamber Decisions",
+    linkUrl: "https://www.gov.uk/courts-tribunals/first-tier-tribunion-property-chamber"
+  },
+  {
+    id: "news-awaabs-law-prs",
+    title: "Awaab's Law to Impose Strict Hazard Remediation Deadlines on PRS Landlords",
+    source: "UK Parliament / Health & Housing",
+    category: "standards",
+    badge: "Health & Safety",
+    badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-300",
+    date: "Statutory Directive",
+    urgency: "Strict Deadlines",
+    summary: "The Government is extending 'Awaab's Law' to the private rented sector. Landlords will be legally bound to investigate reported damp, mould, and emergency hazards within strict statutory windows (such as 14 days to investigate, 7 days to commence repair, 24 hours for emergency defects).",
+    takeaway: "Condition 14 (6-month inspections) and Condition 17 (3-year complaint records) are critical evidence. Landlords must acknowledge repair requests in writing and dispatch registered contractors immediately.",
+    linkText: "Housing Health and Safety Guidance (HHSRS)",
+    linkUrl: "https://www.gov.uk/government/publications/housing-health-and-safety-rating-system-guidance-for-landlords-and-property-related-professionals"
+  },
+  {
+    id: "news-smoke-co-enforcement",
+    title: "Strict Penalties Enforced Under Smoke & Carbon Monoxide Alarm Regulations 2022",
+    source: "Local Authority Housing Teams",
+    category: "standards",
+    badge: "Safety Mandate",
+    badgeColor: "bg-rose-100 text-rose-800 border-rose-300",
+    date: "Active Enforcement",
+    urgency: "£5,000 Penalty",
+    summary: "Local authorities are actively penalizing landlords up to £5,000 for failing to ensure that smoke alarms are fitted on every habitable floor and carbon monoxide detectors in all rooms with fixed combustion appliances. Physical push-tests must be recorded at every tenancy handover.",
+    takeaway: "Use our built-in 'Statutory Safety Declaration' (Conditions 11 & 12) template and push-test log on every tenant move-in and every 6-month inspection.",
+    linkText: "GOV.UK Smoke and Carbon Monoxide Alarm Regulations",
+    linkUrl: "https://www.gov.uk/government/publications/smoke-and-carbon-monoxide-alarm-explanatory-booklet-for-landlords"
+  }
+];
+
+const COUNCIL_SCHEMES_INFO = {
+  redbridge: {
+    name: "London Borough of Redbridge",
+    status: "Active Borough-Wide Schemes",
+    selective: "Active across designated wards (e.g. Valentines, Clementswood, Ilford Town, Loxford, Goodmayes, Chadwell, Newbury, Seven Kings).",
+    hmo: "Mandatory HMO licensing plus Additional HMO Licensing covering all HMOs with 3+ occupants.",
+    article4: "Strict Article 4(1) Direction in force since 6 Dec 2019 — Small HMO conversions (C3 to C4) require full planning permission.",
+    penalties: "Civil Penalties up to £30,000 per offence under s.249A Housing Act 2004.",
+    feeGuide: "Standard Selective Licence fee ~£825 per property (5-year licence). Discounts for LLAS/accredited landlords.",
+    url: "https://www.redbridge.gov.uk/housing/private-rentals/property-licensing/"
+  },
+  newham: {
+    name: "London Borough of Newham",
+    status: "Borough-Wide Selective Licensing (Scheme 4)",
+    selective: "Covers virtually all 22 wards in the borough. Single-family private lets require a licence.",
+    hmo: "Mandatory & Additional HMO licensing covering 3+ sharers.",
+    article4: "Article 4 Direction removing C3 to C4 permitted development.",
+    penalties: "Civil Penalties up to £30,000; extensive prosecutions in Magistrates' Court.",
+    feeGuide: "~£750 - £850 per property. Early bird discounts typically available at scheme launch.",
+    url: "https://www.newham.gov.uk/housing-homes-premises/property-licensing"
+  },
+  brent: {
+    name: "London Borough of Brent",
+    status: "Extensive Selective & Additional Licensing",
+    selective: "Selective licensing covering private rentals across multiple wards (Wembley, Harlesden, Willesden, etc.).",
+    hmo: "Additional HMO scheme covers all privately rented properties with 3 or more occupants forming 2+ households.",
+    article4: "Article 4 Direction across entire borough.",
+    penalties: "Civil penalty notices up to £30,000 aggressively enforced.",
+    feeGuide: "~£840 for 5-year Selective Licence.",
+    url: "https://www.brent.gov.uk/housing/landlords/property-licensing"
+  },
+  waltham_forest: {
+    name: "London Borough of Waltham Forest",
+    status: "Designated Selective Licensing",
+    selective: "Active Selective licensing designation covering 18 out of 22 wards.",
+    hmo: "Mandatory HMO and borough-wide Additional HMO scheme.",
+    article4: "Borough-wide Article 4 in place.",
+    penalties: "Civil penalties and Rent Repayment Orders vigorously supported.",
+    feeGuide: "~£700 per property for compliant landlords.",
+    url: "https://www.walthamforest.gov.uk/housing/private-rented-housing/property-licensing"
+  },
+  westminster: {
+    name: "Westminster City Council",
+    status: "Additional HMO Licensing & Enforcement",
+    selective: "Targeted enforcement across central London wards.",
+    hmo: "Additional HMO scheme covers properties with 3 or more unrelated persons.",
+    article4: "Strict planning rules on residential conversions and short-term lets.",
+    penalties: "Unannounced nighttime inspections and penalties up to £30k.",
+    feeGuide: "~£950+ for HMO licences.",
+    url: "https://www.westminster.gov.uk/housing/property-licensing"
+  },
+  tower_hamlets: {
+    name: "London Borough of Tower Hamlets",
+    status: "Selective & Additional Licensing Active",
+    selective: "Designated wards (Weavers, Whitechapel, Spitalfields & Banglatown).",
+    hmo: "Borough-wide Additional HMO scheme covering 3+ occupants.",
+    article4: "Article 4 Direction active.",
+    penalties: "Civil penalties actively levied.",
+    feeGuide: "~£670 - £850 per licence.",
+    url: "https://www.towerhamlets.gov.uk/lgnl/housing/private_housing/property_licensing.aspx"
+  },
+  camden: {
+    name: "London Borough of Camden",
+    status: "Borough-Wide Additional HMO Licensing",
+    selective: "Active housing health inspections across PRS.",
+    hmo: "Borough-wide Additional licensing for all HMOs shared by 3+ people.",
+    article4: "Strict planning enforcement on HMO conversions.",
+    penalties: "Civil penalties and public register of enforcement.",
+    feeGuide: "~£1,300 for HMO licence.",
+    url: "https://www.camden.gov.uk/property-licensing"
+  },
+  nottingham: {
+    name: "Nottingham City Council",
+    status: "Large-Scale Selective Licensing",
+    selective: "Covers majority of private rented dwellings across the city.",
+    hmo: "Additional and Mandatory HMO licensing schemes.",
+    article4: "Extensive Article 4 restrictions in student and suburban wards.",
+    penalties: "High enforcement rates with civil penalty notices.",
+    feeGuide: "~£890 standard fee, reduced to ~£670 for accredited landlords.",
+    url: "https://www.nottinghamcity.gov.uk/information-for-residents/housing/private-rented-accommodation/selective-licensing/"
+  },
+  manchester: {
+    name: "Manchester City Council",
+    status: "Targeted Selective Licensing Schemes",
+    selective: "Phased Selective Licensing designations across specific wards (Moss Side, Rusholme, Gorton, etc.).",
+    hmo: "Mandatory HMO licensing with selective inspections.",
+    article4: "Article 4 in student corridors.",
+    penalties: "Civil penalties up to £30,000.",
+    feeGuide: "~£650 - £790 per property.",
+    url: "https://www.manchester.gov.uk/info/200068/landlords/7798/selective_licensing"
+  },
+  birmingham: {
+    name: "Birmingham City Council",
+    status: "Selective & Additional Licensing Designations",
+    selective: "Selective licensing covering multiple high-density private rented wards.",
+    hmo: "City-wide Additional HMO licensing covering 3-4 person sharer homes.",
+    article4: "Article 4 Direction covering HMO conversions.",
+    penalties: "Zero tolerance for unlicensed lets.",
+    feeGuide: "~£700 - £800.",
+    url: "https://www.birmingham.gov.uk/info/20179/private_tenants_and_landlords/1471/property_licensing"
+  },
+  liverpool: {
+    name: "Liverpool City Council",
+    status: "Targeted Selective Licensing (16 Wards)",
+    selective: "Selective licensing covers 16 designated wards (e.g. Anfield, Everton, Princes Park, Kensington).",
+    hmo: "Mandatory HMO licensing.",
+    article4: "Article 4 restrictions on HMOs.",
+    penalties: "Civil penalties up to £30,000.",
+    feeGuide: "~£550 for accredited landlords, ~£650 standard.",
+    url: "https://liverpool.gov.uk/business/landlord-licensing/"
+  },
+  leeds: {
+    name: "Leeds City Council",
+    status: "Designated Selective Licensing Areas",
+    selective: "Selective licensing in areas like Beeston and Harehills.",
+    hmo: "Extensive Additional licensing in student and central wards.",
+    article4: "City-wide Article 4 on small HMOs.",
+    penalties: "Enforcement via Civil Penalties and RROs.",
+    feeGuide: "~£825 standard.",
+    url: "https://www.leeds.gov.uk/housing/information-for-landlords/selective-licensing"
+  }
+};
+
+let currentNewsCategory = "all";
+let currentNewsSearch = "";
+
+function renderHousingNews() {
+  const container = document.getElementById("housing-news-grid");
+  if (!container) return;
+
+  const search = currentNewsSearch.toLowerCase().trim();
+  const cat = currentNewsCategory;
+
+  const filtered = HOUSING_NEWS.filter(item => {
+    if (cat !== "all" && item.category !== cat) return false;
+    if (search) {
+      const text = `${item.title} ${item.source} ${item.summary} ${item.takeaway} ${item.urgency}`.toLowerCase();
+      if (!text.includes(search)) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+        <i class="ph-bold ph-newspaper-clipping text-4xl text-slate-300 mb-2"></i>
+        <div class="font-semibold text-slate-700">No news articles found</div>
+        <p class="text-xs text-slate-500 mt-1">Try clearing your search filter or selecting another category.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => `
+    <article class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition p-5 flex flex-col justify-between">
+      <div>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${item.badgeColor}">
+              ${item.badge}
+            </span>
+            <span class="text-[11px] font-semibold text-slate-500">${item.source}</span>
+          </div>
+          <div class="flex items-center gap-2 text-[10px] text-slate-400 font-mono">
+            <span>${item.date}</span>
+            <span class="px-1.5 py-0.2 rounded font-sans font-bold bg-slate-100 text-slate-600">${item.urgency}</span>
+          </div>
+        </div>
+
+        <h3 class="text-sm font-bold text-slate-900 leading-snug hover:text-emerald-700 transition">
+          ${item.title}
+        </h3>
+
+        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+          ${item.summary}
+        </p>
+
+        <div class="mt-3.5 p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-950">
+          <div class="font-bold flex items-center gap-1.5 text-[11px] text-amber-900 mb-0.5 uppercase tracking-wide">
+            <i class="ph-bold ph-lightning text-amber-600"></i> Landlord Action Required:
+          </div>
+          <p class="text-[11px] leading-relaxed text-amber-800">
+            ${item.takeaway}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+        <a href="${item.linkUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">
+          <span>${item.linkText}</span>
+          <i class="ph-bold ph-arrow-up-right text-xs"></i>
+        </a>
+        <span class="text-[10px] text-slate-400 font-mono">Official Source</span>
+      </div>
+    </article>
+  `).join("");
+}
+
+function filterHousingNews(cat, btn) {
+  currentNewsCategory = cat;
+  document.querySelectorAll(".news-filter-btn").forEach(b => {
+    b.className = "news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700";
+  });
+  if (btn) {
+    btn.className = "news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-emerald-700 text-white shadow-sm";
+  }
+  renderHousingNews();
+}
+
+function searchHousingNews() {
+  currentNewsSearch = document.getElementById("news-search-input")?.value || "";
+  renderHousingNews();
+}
+
+function refreshHousingNewsFeed() {
+  const btn = event.currentTarget;
+  const originalHTML = btn.innerHTML;
+  btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Checking...`;
+  setTimeout(() => {
+    btn.innerHTML = originalHTML;
+    renderHousingNews();
+  }, 350);
+}
+
+function lookupCouncilLicensingInfo() {
+  const sel = document.getElementById("council-lookup-select");
+  const container = document.getElementById("council-lookup-result");
+  if (!sel || !container) return;
+
+  const key = sel.value;
+  const info = COUNCIL_SCHEMES_INFO[key] || COUNCIL_SCHEMES_INFO.redbridge;
+
+  container.innerHTML = `
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2 mb-2">
+      <div>
+        <div class="font-bold text-sm text-slate-900">${info.name}</div>
+        <div class="text-[11px] font-semibold text-emerald-700">${info.status}</div>
+      </div>
+      <a href="${info.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 rounded bg-council-900 hover:bg-slate-800 text-white text-[11px] font-semibold transition shrink-0">
+        <i class="ph-bold ph-arrow-square-out"></i> Visit Council Portal
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] pt-1">
+      <div>
+        <strong class="text-slate-800">Selective Licensing Scope:</strong>
+        <p class="text-slate-600 mt-0.5 leading-relaxed">${info.selective}</p>
+      </div>
+      <div>
+        <strong class="text-slate-800">HMO Licensing Scope:</strong>
+        <p class="text-slate-600 mt-0.5 leading-relaxed">${info.hmo}</p>
+      </div>
+      <div>
+        <strong class="text-slate-800">Article 4 Direction:</strong>
+        <p class="text-slate-600 mt-0.5 leading-relaxed">${info.article4}</p>
+      </div>
+      <div>
+        <strong class="text-slate-800">Fees &amp; Penalties:</strong>
+        <p class="text-slate-600 mt-0.5 leading-relaxed">${info.feeGuide} • ${info.penalties}</p>
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================================
+// 11. INITIALIZATION
 // =========================================================================
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -1701,6 +2084,8 @@ window.addEventListener("DOMContentLoaded", () => {
   renderChecklist();
   updateStats();
   loadTemplate("inspection");
+  renderHousingNews();
+  lookupCouncilLicensingInfo();
 
   // Initialize Calculator to today's date
   const triggerInput = document.getElementById("trigger-date");
@@ -1716,3 +2101,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 450);
   }
 });
+

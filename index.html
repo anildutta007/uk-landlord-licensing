@@ -197,6 +197,12 @@
         <span>Council &amp; BTL Guide</span>
       </button>
 
+      <button onclick="switchTab('news')" id="tab-btn-news" class="tab-btn px-4 py-2.5 text-xs font-bold rounded-lg flex items-center gap-2 transition bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 shrink-0">
+        <i class="ph-bold ph-newspaper text-base text-rose-600"></i>
+        <span>UK Housing &amp; Council News</span>
+        <span class="ml-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-mono uppercase font-bold tracking-wider">Live</span>
+      </button>
+
     </div>
 
     <!-- ============================================== -->
@@ -683,6 +689,124 @@
             <li><strong>Tenancy Deposit Prescribed Information:</strong> Served within 30 statutory days of receiving the deposit.</li>
             <li><strong>How to Rent Guide:</strong> Current government edition supplied at the start of tenancy.</li>
           </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TAB 6: UK HOUSING & COUNCIL NEWS -->
+    <!-- ============================================== -->
+    <div id="tab-news" class="tab-content hidden">
+      <div class="space-y-6">
+        
+        <!-- News Header & Breaking Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-council-900 to-slate-950 text-white rounded-2xl p-6 shadow-md border border-slate-800">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 mb-2 uppercase tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                Official Government &amp; Local Authority Updates
+              </div>
+              <h2 class="text-lg md:text-xl font-bold tracking-tight">
+                UK Housing &amp; Landlord Regulatory News Hub
+              </h2>
+              <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                Stay ahead of statutory changes, Renters' Rights Bill progression, local council selective licensing designations, and enforcement crackdowns in England &amp; Wales.
+              </p>
+            </div>
+
+            <!-- External Official Portals -->
+            <div class="flex flex-wrap gap-2">
+              <a href="https://www.gov.uk/government/organisations/ministry-of-housing-communities-and-local-government" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                <i class="ph-bold ph-arrow-square-out text-emerald-400"></i> GOV.UK (MHCLG)
+              </a>
+              <a href="https://www.redbridge.gov.uk/housing/private-rentals/property-licensing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                <i class="ph-bold ph-arrow-square-out text-sky-400"></i> Redbridge Housing
+              </a>
+              <a href="https://www.londonpropertylicensing.co.uk/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                <i class="ph-bold ph-arrow-square-out text-amber-400"></i> London Licensing
+              </a>
+            </div>
+          </div>
+
+          <!-- Highlight Alert Bar -->
+          <div class="mt-5 pt-4 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <span class="text-[10px] uppercase font-bold text-rose-400 tracking-wider">Parliament Priority</span>
+              <div class="font-bold text-white mt-0.5">Renters' Rights Bill</div>
+              <p class="text-[11px] text-slate-300 mt-0.5">Abolishing Section 21, shifting to rolling tenancies, and extending Awaab's Law to private rented homes.</p>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Home Office Enforcement</span>
+              <div class="font-bold text-white mt-0.5">Right to Rent Penalties Tripled</div>
+              <p class="text-[11px] text-slate-300 mt-0.5">Civil penalties now up to £5,000 for a first breach and £10,000 for repeat offenses per occupier.</p>
+            </div>
+            <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/60">
+              <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Borough Schemes</span>
+              <div class="font-bold text-white mt-0.5">Licensing Crackdowns</div>
+              <p class="text-[11px] text-slate-300 mt-0.5">Redbridge, Newham &amp; Brent actively issuing Civil Penalties up to £30k for missing inspection logs.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5" id="news-category-filters">
+            <button onclick="filterHousingNews('all', this)" class="news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-emerald-700 text-white shadow-sm">All News</button>
+            <button onclick="filterHousingNews('legislation', this)" class="news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">Government &amp; Parliament</button>
+            <button onclick="filterHousingNews('councils', this)" class="news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">Council Licensing</button>
+            <button onclick="filterHousingNews('enforcement', this)" class="news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">Fines &amp; Enforcement</button>
+            <button onclick="filterHousingNews('standards', this)" class="news-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition bg-slate-100 hover:bg-slate-200 text-slate-700">Energy &amp; Standards</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <i class="ph-bold ph-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="news-search-input" oninput="searchHousingNews()" placeholder="Search news &amp; updates..." class="text-xs bg-white border border-slate-300 rounded-lg pl-8 pr-2.5 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 w-52">
+            </div>
+            <button onclick="refreshHousingNewsFeed()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition" title="Check for latest news updates">
+              <i class="ph-bold ph-arrows-clockwise"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- News Cards Grid -->
+        <div id="housing-news-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Rendered dynamically via app.js -->
+        </div>
+
+        <!-- Interactive Council Scheme Finder Widget -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mt-8">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4 mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i class="ph-bold ph-map-pin text-emerald-600 text-lg"></i>
+                UK Local Council Licensing Scheme Lookup Tool
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Quickly check active licensing rules and direct council portal links for major UK local authorities:</p>
+            </div>
+            <div>
+              <select id="council-lookup-select" onchange="lookupCouncilLicensingInfo()" class="text-xs border border-slate-300 rounded-lg p-2 font-semibold text-slate-700 focus:ring-1 focus:ring-emerald-500 outline-none">
+                <option value="redbridge">London Borough of Redbridge</option>
+                <option value="newham">London Borough of Newham</option>
+                <option value="brent">London Borough of Brent</option>
+                <option value="waltham_forest">London Borough of Waltham Forest</option>
+                <option value="westminster">Westminster City Council</option>
+                <option value="tower_hamlets">London Borough of Tower Hamlets</option>
+                <option value="camden">London Borough of Camden</option>
+                <option value="nottingham">Nottingham City Council</option>
+                <option value="manchester">Manchester City Council</option>
+                <option value="birmingham">Birmingham City Council</option>
+                <option value="liverpool">Liverpool City Council</option>
+                <option value="leeds">Leeds City Council</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="council-lookup-result" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+            <!-- Dynamically populated -->
+          </div>
         </div>
 
       </div>
