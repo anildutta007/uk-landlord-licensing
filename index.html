@@ -704,34 +704,55 @@
     <!-- TAB 6: UK HOUSING & COUNCIL NEWS -->
     <!-- ============================================== -->
     <div id="tab-news" class="tab-content hidden">
-      <div class="space-y-6">
+      <div class="space-y-5">
+
+        <!-- Legal & Educational Purpose Disclaimer Banner -->
+        <div class="p-4 bg-amber-50/90 border-2 border-amber-300 rounded-2xl flex items-start gap-3.5 shadow-xs">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center text-xl shrink-0 shadow-inner">
+            ⚖️
+          </div>
+          <div class="text-xs text-amber-950 space-y-1 min-w-0">
+            <div class="font-bold text-sm text-amber-950 flex flex-wrap items-center gap-2">
+              <span>Educational &amp; Regulatory Reference Disclaimer</span>
+              <span class="text-[10px] bg-amber-200 text-amber-900 font-mono px-2 py-0.5 rounded font-bold uppercase tracking-wider">Educational Use Only</span>
+            </div>
+            <p class="leading-relaxed text-amber-900 text-[11px]">
+              All regulatory digests, statutory news summaries, and council licensing updates below are curated strictly for <strong>educational, training, and general informational reference only</strong>. They do not constitute formal legal counsel, statutory advice, or solicitor representation. UK housing legislation changes frequently; landlords must verify all details with primary government statutory sources (official direct links provided on each card) or instruct a qualified solicitor for active disputes.
+            </p>
+          </div>
+        </div>
         
         <!-- News Header & Breaking Banner -->
         <div class="bg-gradient-to-r from-slate-900 via-council-900 to-slate-950 text-white rounded-2xl p-6 shadow-md border border-slate-800">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 mb-2 uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-                Official Government &amp; Local Authority Updates
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 uppercase tracking-wider">
+                  <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                  Official Government &amp; Council Updates
+                </span>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+                  <i class="ph-bold ph-calendar-check"></i> Published Within Last 30 Days <span id="news-window-dates" class="text-emerald-200"></span>
+                </span>
               </div>
               <h2 class="text-lg md:text-xl font-bold tracking-tight">
                 UK Housing &amp; Landlord Regulatory News Hub
               </h2>
               <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                Stay ahead of statutory changes, Renters' Rights Bill progression, local council selective licensing designations, and enforcement crackdowns in England &amp; Wales.
+                Displaying official statutory announcements, Renters' Rights Bill progression, and local council licensing actions published in the <strong>last 30 days</strong> with direct links to primary sources.
               </p>
             </div>
 
             <!-- External Official Portals -->
             <div class="flex flex-wrap gap-2">
-              <a href="https://www.gov.uk/government/organisations/ministry-of-housing-communities-and-local-government" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+              <a href="https://www.gov.uk/government/organisations/ministry-of-housing-communities-and-local-government" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition" title="Visit GOV.UK Ministry of Housing, Communities & Local Government">
                 <i class="ph-bold ph-arrow-square-out text-emerald-400"></i> GOV.UK (MHCLG)
               </a>
-              <a href="https://www.redbridge.gov.uk/housing/private-rentals/property-licensing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
-                <i class="ph-bold ph-arrow-square-out text-sky-400"></i> Redbridge Housing
+              <a href="https://bills.parliament.uk/bills/3764" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition" title="UK Parliament Renters' Rights Bill tracker">
+                <i class="ph-bold ph-arrow-square-out text-rose-400"></i> UK Parliament Bill
               </a>
-              <a href="https://www.londonpropertylicensing.co.uk/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
-                <i class="ph-bold ph-arrow-square-out text-amber-400"></i> London Licensing
+              <a href="https://www.redbridge.gov.uk/housing/private-rentals/property-licensing/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition" title="London Borough of Redbridge Licensing">
+                <i class="ph-bold ph-arrow-square-out text-sky-400"></i> Redbridge Housing
               </a>
             </div>
           </div>
