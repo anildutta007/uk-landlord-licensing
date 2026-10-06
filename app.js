@@ -704,8 +704,8 @@ function renderChecklist() {
         ${item.retention}
       </td>
       <td class="p-3.5 text-center">
-        <button onclick="jumpToTemplate('${item.template}')" class="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-800 font-medium px-2 py-1 rounded bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition" title="View & Download PDF Form">
-          <i class="ph-bold ph-file-pdf"></i> PDF
+        <button onclick="jumpToTemplate('${item.template}')" class="inline-flex items-center gap-1 text-xs text-blue-700 hover:text-blue-800 font-semibold px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 transition" title="Open Editable Word (.docx) & PDF Form">
+          <i class="ph-bold ph-file-doc"></i> Word / PDF
         </button>
       </td>
     `;
@@ -1449,6 +1449,204 @@ function jumpToTemplate(key) {
   const btns = Array.from(document.querySelectorAll(".tmpl-selector"));
   const btn = btns.find(b => b.getAttribute("onclick")?.includes(`'${key}'`)) || btns[0];
   loadTemplate(key, btn);
+}
+
+// =========================================================================
+// CLIENT-SIDE WORD (.DOCX) & PDF GENERATORS
+// =========================================================================
+
+// Utility to trigger file download in browser
+function saveBlobAs(blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 300);
+}
+
+// Client-Side Editable Word (.docx) Generation using html-docx-js
+function downloadCurrentTemplateWord() {
+  const cfg = TEMPLATE_CONFIGS[currentTemplateKey];
+  if (!cfg) return;
+
+  if (typeof gtag === "function") {
+    gtag("event", "generate_word", { template: currentTemplateKey });
+  }
+
+  const printableArea = document.getElementById("printable-area");
+  if (!printableArea) return;
+
+  const btn = document.getElementById("btn-download-word");
+  const originalHTML = btn ? btn.innerHTML : "";
+  if (btn) {
+    btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> Generating Word Doc...`;
+    btn.disabled = true;
+  }
+
+  try {
+    // 1. Deep clone printable area to replace interactive inputs with clean printable text
+    const clone = printableArea.cloneNode(true);
+
+    // Remove buttons, toolbars, or no-print elements in clone
+    clone.querySelectorAll(".no-print, button").forEach(el => el.remove());
+
+    // Replace inputs in clone with the actual live values entered by the user
+    const liveInputs = printableArea.querySelectorAll("input, textarea, select");
+    const cloneInputs = clone.querySelectorAll("input, textarea, select");
+
+    cloneInputs.forEach((clonedInput, index) => {
+      const liveInput = liveInputs[index] || clonedInput;
+      if (clonedInput.tagName.toLowerCase() === "textarea") {
+        const val = liveInput.value || clonedInput.value || "";
+        const p = document.createElement("p");
+        p.style.whiteSpace = "pre-wrap";
+        p.innerText = val;
+        clonedInput.replaceWith(p);
+      } else if (clonedInput.type === "checkbox") {
+        const span = document.createElement("span");
+        span.style.fontFamily = "monospace";
+        span.style.fontWeight = "bold";
+        span.innerText = liveInput.checked ? "[✓] " : "[ ] ";
+        clonedInput.replaceWith(span);
+      } else {
+        const val = liveInput.value !== undefined ? liveInput.value : clonedInput.value;
+        const span = document.createElement("span");
+        span.style.fontWeight = "bold";
+        if (val && val.trim()) {
+          span.innerText = val.trim();
+        } else {
+          span.innerText = "___________________________";
+        }
+        clonedInput.replaceWith(span);
+      }
+    });
+
+    // 2. Prepare Word-compliant HTML document with clean typography & tables
+    const wordHtml = `<!DOCTYPE html>
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset="utf-8">
+  <title>${cfg.title}</title>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>100</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    @page Section1 {
+      size: 595.3pt 841.9pt; /* A4 size */
+      margin: 48pt 48pt 48pt 48pt;
+      mso-header-margin: 36pt;
+      mso-footer-margin: 36pt;
+      mso-paper-source: 0;
+    }
+    div.Section1 { page: Section1; }
+    body {
+      font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+      font-size: 11pt;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0;
+      padding: 0;
+    }
+    h1 { font-size: 16pt; font-weight: bold; color: #0f172a; margin: 0 0 2pt 0; text-transform: uppercase; }
+    h2 { font-size: 11pt; font-weight: bold; color: #047857; margin: 0 0 2pt 0; text-transform: uppercase; }
+    h3 { font-size: 10.5pt; font-weight: bold; color: #0f172a; margin: 10pt 0 4pt 0; }
+    p { margin: 3pt 0 6pt 0; line-height: 1.35; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 6pt;
+      margin-bottom: 12pt;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 5pt 7pt;
+      font-size: 9.5pt;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: bold;
+      color: #0f172a;
+    }
+    .legal-table { border-collapse: collapse; width: 100%; margin-bottom: 12pt; }
+    .legal-table th { background-color: #f1f5f9; border: 1px solid #cbd5e1; padding: 5pt 7pt; font-size: 9.5pt; font-weight: bold; }
+    .legal-table td { border: 1px solid #cbd5e1; padding: 5pt 7pt; font-size: 9.5pt; }
+    .legal-header { border-bottom: 2px solid #0f172a; padding-bottom: 8pt; margin-bottom: 12pt; }
+    .legal-section-title {
+      font-size: 10.5pt;
+      font-weight: bold;
+      color: #0f172a;
+      margin-top: 12pt;
+      margin-bottom: 4pt;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 2pt;
+    }
+    .legal-stamp {
+      border: 1.5px solid #0f172a;
+      padding: 2pt 5pt;
+      font-weight: bold;
+      font-size: 8.5pt;
+      display: inline-block;
+      text-transform: uppercase;
+      font-family: monospace;
+    }
+    .signature-box {
+      border-top: 1px solid #cbd5e1;
+      margin-top: 18pt;
+      padding-top: 10pt;
+    }
+    .bg-slate-50 { background-color: #f8fafc; font-weight: bold; }
+    strong { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="Section1">
+    ${clone.innerHTML}
+  </div>
+</body>
+</html>`;
+
+    const cleanFilename = `${(currentProperty.postcode || "LICENCE").replace(/\s+/g, "_")}_${cfg.fileName.replace(/\.pdf$/i, ".docx")}`;
+
+    // 3. Generate file using htmlDocx or fallback to Word HTML
+    if (window.htmlDocx && typeof window.htmlDocx.asBlob === "function") {
+      const docxBlob = window.htmlDocx.asBlob(wordHtml);
+      saveBlobAs(docxBlob, cleanFilename);
+    } else {
+      // Fallback to Microsoft Word (.doc) MIME document
+      const fallbackBlob = new Blob(['\ufeff', wordHtml], {
+        type: 'application/msword;charset=utf-8'
+      });
+      saveBlobAs(fallbackBlob, cleanFilename.replace(/\.docx$/i, ".doc"));
+    }
+
+    if (btn) {
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  } catch (err) {
+    console.error("Word document generation error:", err);
+    alert("Could not generate Word document. Falling back to PDF export.");
+    downloadCurrentTemplatePDF();
+    if (btn) {
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  }
 }
 
 // Client-Side PDF Generation using html2pdf.js
