@@ -178,6 +178,12 @@ const INITIAL_CONDITIONS = [
     retention: "Duration of Licence",
     template: "onboarding",
     statutoryRef: "Immigration Act 2014 & Cond 4",
+    officialLinks: [
+      {
+        title: "GOV.UK: Right to Rent — Who to Check",
+        url: "https://www.gov.uk/check-tenant-right-to-rent-documents/who-to-check"
+      }
+    ],
     done: true
   },
   {
@@ -250,6 +256,20 @@ const INITIAL_CONDITIONS = [
     retention: "Duration of Licence",
     template: "declaration",
     statutoryRef: "Regulatory Reform Order 2005",
+    officialLinks: [
+      {
+        title: "GOV.UK: Landlord Safety Responsibilities",
+        url: "https://www.gov.uk/private-renting/your-landlords-safety-responsibilities"
+      },
+      {
+        title: "GOV.UK: HHSRS Fire Safety Guidance",
+        url: "https://www.gov.uk/government/publications/housing-health-and-safety-rating-system-guidance-for-landlords-and-property-related-professionals"
+      },
+      {
+        title: "London Fire Brigade: Landlords' Responsibilities",
+        url: "https://www.london-fire.gov.uk/safety/property-management/landlords-responsibilities"
+      }
+    ],
     done: true
   },
   {
@@ -655,7 +675,10 @@ function renderChecklist() {
   const filtered = conditionsData.filter(item => {
     // Search
     if (searchQuery) {
-      const combined = `${item.cond} ${item.title} ${item.text} ${item.doc} ${item.statutoryRef}`.toLowerCase();
+      let combined = `${item.cond} ${item.title} ${item.text} ${item.doc} ${item.statutoryRef}`.toLowerCase();
+      if (item.officialLinks) {
+        combined += ' ' + item.officialLinks.map(l => l.title).join(' ').toLowerCase();
+      }
       if (!combined.includes(searchQuery)) return false;
     }
     // Category
@@ -694,6 +717,16 @@ function renderChecklist() {
         <div class="font-semibold text-slate-900 text-xs">${item.title}</div>
         <p class="text-slate-600 text-[11px] leading-relaxed mt-0.5">${item.text}</p>
         <div class="text-[10px] text-slate-400 font-mono mt-1">${item.statutoryRef}</div>
+        ${item.officialLinks && item.officialLinks.length > 0 ? `
+          <div class="mt-2 pt-1.5 border-t border-slate-200/80 flex flex-wrap gap-1.5">
+            ${item.officialLinks.map(lnk => `
+              <a href="${lnk.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 transition" title="Open official guidance: ${lnk.title}">
+                <i class="ph-bold ph-arrow-square-out text-xs"></i>
+                <span>${lnk.title}</span>
+              </a>
+            `).join('')}
+          </div>
+        ` : ''}
       </td>
       <td class="p-3.5">
         <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${item.done ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-700"}">
